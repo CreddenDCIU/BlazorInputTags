@@ -3,6 +3,7 @@
 
 <h3>Basic usage</h3>
 <InputTags Value="Tags" />
+<InputSelectTags Value="DropDownTags" Source="DropDownSource" />
 
 @code {
     public List<string> Tags { get; set; } = new()
@@ -10,4 +11,19 @@
         "Hello",
         "World"
     };
+
+    public List<object> DropDownSource { get; set; } = [];
+    public List<object> DropDownTags { get; set; } = [];
+
+    protected override void OnInitialized()
+    {
+        DropDownSource.Add(new InputTagRecord { RecordId = 1, RecordName = "Hello" });
+        DropDownSource.Add(new InputTagRecord { RecordId = 2, RecordName = "World" });
+    }
+
+    public class InputTagRecord : IInputTagRecord
+    {
+        public int RecordId { get; set; }
+        public string RecordName { get; set; } = string.Empty;
+    }
 }
