@@ -1,0 +1,91 @@
+﻿@if (Options.DisplayLabel)
+{
+    <label class="@Options.LabelClass">@Label</label>
+}
+<div class="@Options.WrapperClass" tabindex="-1">
+    <ul class="@Options.TagListClass">
+        @foreach (IInputTagRecord record in Value)
+        {
+            if(record == null) { continue; }
+            <li class="@Options.TagClass"><button type="button" title="@Options.RemoveButtonTooltip" @onclick="() => RemoveValue(record)">@record.RecordName <b>&times;</b></button></li>
+        }
+    </ul>
+
+    <select @ref="_reference" class="@Options.InputClass" @bind="Input">
+        @foreach(IInputTagRecord record in Source)
+        {
+            if (record == null) { continue; }
+            <option value="@record.RecordId">@record.RecordName</option>
+        }
+    </select>
+</div>
+
+@code {
+    private IInputTagRecord _input = null!;
+    public IInputTagRecord Input
+    {
+        get => _input;
+        set
+        {
+            if(UpdateValue(value))
+            {
+                OnTagAdded.InvokeAsync(value);
+            }
+        }
+    }
+
+    private bool _wasSetToEmpty = false;
+
+    [Parameter]
+    public string Label { get; set; } = "Tags:";
+    [Parameter]
+    public List<object> Value { get; set; } = new();
+    [Parameter]
+    public List<object> Source { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<IInputTagRecord> OnTagAdded { get; set; }
+
+    [Parameter]
+    public EventCallback<IInputTagRecord> OnTagRemoved { get; set; }
+
+    [Parameter]
+    public InputTagOptions Options { get; set; } = new();
+
+    /// <summary>
+    /// Function to validate the user input.
+    /// </summary>
+    [Parameter]
+    public Func<string, Task<bool>>? ValidateTag { get; set; }
+
+    private ElementReference? _reference;
+
+    public Guid Guid { get; set; } = Guid.NewGuid();
+
+    public bool UpdateValue(IInputTagRecord input)
+    {
+        foreach (IInputTagRecord record in Value)
+        {
+            if (record == null) { continue; }
+            if (record.RecordId.Equals(input.RecordId)) { return false; }
+        }
+
+        foreach (IInputTagRecord record in Source)
+        {
+            if (record == null || record.RecordId.Equals(input.RecordId)) { continue; }
+
+            Value.Add(record);
+            return true;
+        }
+
+        return false;
+    }
+
+    public void RemoveValue(IInputTagRecord value)
+    {
+        if (value == null) { return; }
+
+        Value.Remove(value);
+        OnTagRemoved.InvokeAsync(value);
+    }
+}

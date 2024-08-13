@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>BlazorInputTags</Title>
-		<Authors>Marvin Klein</Authors>
-		<Version>8.0.1</Version>
+		<Authors>Marvin Klein, Christopher Redden</Authors>
+		<Version>8.1.0</Version>
 		<Copyright>2023</Copyright>
 		<PackageReadmeFile>README.MD</PackageReadmeFile>
 		<RepositoryType>git</RepositoryType>
